@@ -202,6 +202,68 @@ spec:
     hosts:
     - &quot;*/*&quot;
 </code></pre>
+<p>The following example declares a <code>Sidecar</code> configuration in the
+<code>prod-us1</code> namespace for all pods with labels <code>app: ratings</code>
+belonging to the <code>ratings.prod-us1</code> service.  The service accepts
+inbound HTTPS traffic on port 8443 and the sidecar proxy terminates
+one way TLS using the given server certificates.
+The traffic is then forwarded to the attached workload instance
+listening on a Unix domain socket.
+It is expected that PeerAuthentication policy would be configured
+in order to set mTLS mode to &ldquo;DISABLE&rdquo; on specific
+ports.
+In this example, the mTLS mode is disabled on PORT 80.
+This feature is currently experimental.</p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
+kind: Sidecar
+metadata:
+  name: ratings
+  namespace: prod-us1
+spec:
+  workloadSelector:
+    labels:
+      app: ratings
+  ingress:
+  - port:
+      number: 80
+      protocol: HTTPS
+      name: somename
+    defaultEndpoint: unix:///var/run/someuds.sock
+    tls:
+      mode: SIMPLE
+      privateKey: &quot;/etc/certs/privatekey.pem&quot;
+      serverCertificate: &quot;/etc/certs/servercert.pem&quot;
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratings
+  labels:
+    app: ratings
+    service: ratings
+spec:
+  ports:
+  - port: 8443
+    name: https
+    targetPort: 80
+  selector:
+    app: ratings
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: ratings-peer-auth
+  namespace: prod-us1
+spec:
+  selector:
+    matchLabels:
+      app: ratings
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: DISABLE
+</code></pre>
 <p>In addition to configuring traffic capture and how traffic is forwarded to the app,
 it&rsquo;s possible to control inbound connection pool settings. By default, Istio pushes
 connection pool settings from <code>DestinationRules</code> to both clients (for outbound

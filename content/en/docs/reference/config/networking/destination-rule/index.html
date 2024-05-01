@@ -71,6 +71,28 @@ spec:
       loadBalancer:
         simple: ROUND_ROBIN
 </code></pre>
+<p>Destination Rules can be customized to specific workloads as well.
+The following example shows how a destination rule can be applied to a
+specific workload using the workloadSelector configuration.</p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: configure-client-mtls-dr-with-workloadselector
+spec:
+  host: example.com
+  workloadSelector:
+    matchLabels:
+      app: ratings
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+    portLevelSettings:
+    - port:
+        number: 31443
+      tls:
+        credentialName: client-credential
+        mode: MUTUAL
+</code></pre>
 
 <h2 id="DestinationRule">DestinationRule</h2>
 <section>
@@ -289,7 +311,7 @@ service-level can be overridden at a subset-level. The following rule
 uses a round robin load balancing policy for all traffic going to a
 subset named testversion that is composed of endpoints (e.g., pods) with
 labels (version:v3).</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: bookinfo-ratings
@@ -373,7 +395,7 @@ load balancing
 for more details.</p>
 <p>For example, the following rule uses a round robin load balancing policy
 for all traffic going to the ratings service.</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: bookinfo-ratings
@@ -386,7 +408,7 @@ spec:
 <p>The following example sets up sticky sessions for the ratings service
 hashing-based load balancer for the same ratings service using the
 the User cookie as the hash key.</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: bookinfo-ratings
@@ -470,7 +492,7 @@ for more details. Connection pool settings can be applied at the TCP
 level as well as at HTTP level.</p>
 <p>For example, the following rule sets a limit of 100 connections to redis
 service called myredissrv with a connect timeout of 30ms</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: bookinfo-redis
@@ -537,7 +559,7 @@ with no more than 10 req/connection to the &ldquo;reviews&rdquo; service. In add
 it sets a limit of 1000 concurrent HTTP2 requests and configures upstream
 hosts to be scanned every 5 mins so that any host that fails 7 consecutive
 times with a 502, 503, or 504 error code will be ejected for 15 minutes.</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: reviews-cb-policy
@@ -706,7 +728,7 @@ context</a>
 for more details. These settings are common to both HTTP and TCP upstreams.</p>
 <p>For example, the following rule configures a client to use mutual TLS
 for connections to upstream database cluster.</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: db-mtls
@@ -721,7 +743,7 @@ spec:
 </code></pre>
 <p>The following rule configures a client to use TLS when talking to a
 foreign service whose domain matches *.foo.com.</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: tls-foo
@@ -733,7 +755,7 @@ spec:
 </code></pre>
 <p>The following rule configures a client to use Istio mutual TLS when talking
 to rating services.</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: ratings-istio-mtls
@@ -1374,7 +1396,9 @@ No
 <td>
 <p>The table size for Maglev hashing. This helps in controlling the
 disruption when the backend hosts change.
-Increasing the table size reduces the amount of disruption.</p>
+Increasing the table size reduces the amount of disruption.
+The table size must be prime number less than 5000011.
+If it is not specified, the default is 65537.</p>
 
 </td>
 <td>

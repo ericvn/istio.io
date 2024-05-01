@@ -221,7 +221,7 @@ No
 <section>
 <p><code>Server</code> describes the properties of the proxy on a given load balancer
 port. For example,</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: my-ingress
@@ -237,7 +237,7 @@ spec:
     - &quot;*&quot;
 </code></pre>
 <p>Another example</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: my-tcp-ingress
@@ -253,7 +253,7 @@ spec:
     - &quot;*&quot;
 </code></pre>
 <p>The following is an example of TLS configuration for port 443</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: my-tls-ingress
