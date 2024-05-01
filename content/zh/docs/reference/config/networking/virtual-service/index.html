@@ -1,13 +1,13 @@
 ---
-WARNING: THIS IS AN AUTO-GENERATED FILE, DO NOT EDIT. PLEASE MODIFY THE ORIGINAL SOURCE IN THE 'https://github.com/istio/api' REPO
-source_repo: https://github.com/istio/api
+WARNING: THIS IS AN AUTO-GENERATED FILE, DO NOT EDIT. PLEASE MODIFY THE ORIGINAL SOURCE IN THE 'https://github.com/ericvn/api' REPO
+source_repo: https://github.com/ericvn/api
 title: Virtual Service
 description: Configuration affecting label/content routing, sni routing, etc.
 location: https://istio.io/docs/reference/config/networking/virtual-service.html
 layout: protoc-gen-docs
 generator: protoc-gen-docs
-schema: istio.networking.v1alpha3.VirtualService
-aliases: [/zh/docs/reference/config/networking/v1alpha3/virtual-service]
+schema: istio.networking.v1.VirtualService
+aliases: [/zh/docs/reference/config/networking/v1/virtual-service]
 number_of_entries: 29
 ---
 <p>Configuration affecting traffic routing. Here are a few terms useful to define
@@ -43,7 +43,7 @@ to be customized for specific client contexts.</p>
 pods of the reviews service with label &ldquo;version: v1&rdquo;. In addition,
 HTTP requests with path starting with /wpcatalog/ or /consumercatalog/ will
 be rewritten to /newcatalog and sent to pods with label &ldquo;version: v2&rdquo;.</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: reviews-route
@@ -72,7 +72,7 @@ spec:
 <p>A subset/version of a route destination is identified with a reference
 to a named service subset which must be declared in a corresponding
 <code>DestinationRule</code>.</p>
-<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: reviews-destination
